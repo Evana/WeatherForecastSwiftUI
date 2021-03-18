@@ -10,7 +10,7 @@ import CoreLocation
 
 extension CurrentWeather {
     var locationCoordinate: CLLocationCoordinate2D {
-      return CLLocationCoordinate2D.init(latitude: coordinate.latitute,
+      return CLLocationCoordinate2D(latitude: coordinate.latitute,
                                          longitude: coordinate.longitude)
     }
     

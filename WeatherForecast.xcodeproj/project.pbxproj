@@ -368,13 +368,13 @@
 		2090F02026020E4100026882 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				2090F02126020E4100026882 /* Fetch.CurrentWeather.swift */,
-				2090F02226020E4100026882 /* CurrentWeather.swift */,
 				2090F02326020E4100026882 /* City.swift */,
+				2090F02226020E4100026882 /* CurrentWeather.swift */,
+				2090F02126020E4100026882 /* Fetch.CurrentWeather.swift */,
 				2090F02426020E4100026882 /* Fetch.WeeklyWether.swift */,
-				2090F02526020E4100026882 /* WeeklyWeather.swift */,
 				2090F02626020E4100026882 /* Weather.swift */,
 				2090F02726020E4100026882 /* WeatherDetail.swift */,
+				2090F02526020E4100026882 /* WeeklyWeather.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

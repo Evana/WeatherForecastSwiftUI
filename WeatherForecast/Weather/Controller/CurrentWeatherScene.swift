@@ -15,8 +15,8 @@ extension CurrentWeatherScene: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
+                searchByPicker
                 searchField
-                    .padding()
                 if viewModel.sortedWeathers.isEmpty {
                     emptySection
                 } else {
@@ -57,23 +57,26 @@ extension CurrentWeatherScene: View {
         .onAppear { viewModel.onAppear() }
     }
     
-    var searchField: some View {
+    private var searchField: some View {
         HStack(alignment: .center) {
-            TextField("e.g. Sydney or Sydney,2000 or 2000", text: $viewModel.city)
+            TextField("e.g " + (viewModel.segment == .postCode
+                                    ? "Sydney or Sydney,2000 or 2000"
+                                    : "lat,lon(-122.08,37.39)"),
+                      text: $viewModel.text)
             Image(systemName:"exclamationmark.triangle.fill").foregroundColor(viewModel.error != nil ? .red : .clear)
         }
         .padding(.vertical, 8)
         .padding(.horizontal)
         .overlay(RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        (viewModel.city.isEmpty ? Color.textBorderNormal : Color.textBorderHighlighted),
+                        (viewModel.text.isEmpty ? Color.textBorderNormal : Color.textBorderHighlighted),
                         lineWidth: 1
                     )
         )
-
+        .padding(.horizontal)
     }
     
-    var emptySection: some View {
+    private var emptySection: some View {
         VStack(alignment: .leading) {
             Divider()
             Text("No results")
@@ -84,6 +87,14 @@ extension CurrentWeatherScene: View {
     
     private func weatherCell(_ weather: CurrentWeather) -> some View {
         WeatherCell(weather: weather)
+    }
+    
+    private var searchByPicker: some View {
+        Picker("Search By:", selection: $viewModel.segment) {
+            ForEach(CurrentWeatherViewModel.Segment.allCases) { Text($0.title) }
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .padding(.horizontal)
     }
 }
 

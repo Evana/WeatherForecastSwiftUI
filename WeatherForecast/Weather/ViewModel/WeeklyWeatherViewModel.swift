@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import CoreLocation
 
 class WeeklyWeatherViewModel: ObservableObject {
     private var subscribers = Set<AnyCancellable>()

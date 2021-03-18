@@ -22,4 +22,9 @@ extension Fetch.CurrentWeather {
         publisher(keyValues: ["q": q])
             .eraseToAnyPublisher()
     }
+    
+    static func publisher(lat: String, lon: String) -> AnyPublisher<FetchedType, Error> {
+        publisher(keyValues: ["lat": lat, "lon": lon])
+            .eraseToAnyPublisher()
+    }
 }
