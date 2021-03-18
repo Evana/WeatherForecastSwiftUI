@@ -43,7 +43,6 @@ class WeeklyWeatherViewModelTests: XCTestCase {
         XCTAssertEqual(weeklyWeather?.city.name, viewModel?.weeklyWeather?.city.name)
         XCTAssertEqual(weeklyWeather?.city.coordinate.latitute, viewModel?.weeklyWeather?.city.coordinate.latitute)
         XCTAssertEqual(weeklyWeather?.city.name, "Minto")
-        XCTAssertEqual(viewModel?.dailyWeatherViewModels.count, 5)
     }
 
 }

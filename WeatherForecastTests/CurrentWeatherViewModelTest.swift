@@ -17,9 +17,9 @@ class CurrentWeatherViewModelTest: XCTestCase {
     override func setUp() {
         super.setUp()
         viewModel = CurrentWeatherViewModel()
-        viewModel?.city = "Minto"
         subscribers = []
         viewModel?.onAppear()
+        viewModel?.text = "Minto"
     }
     
     override func tearDown() {
@@ -31,7 +31,7 @@ class CurrentWeatherViewModelTest: XCTestCase {
         var error: Error?
         var currentWeather: CurrentWeather?
         let expectation = self.expectation(description: "WeekluWeather")
-        Fetch.CurrentWeather.publisher(q: viewModel?.city ?? "")
+        Fetch.CurrentWeather.publisher(q: viewModel?.text ?? "")
             .receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion{
@@ -45,7 +45,7 @@ class CurrentWeatherViewModelTest: XCTestCase {
                 self?.viewModel?.weathers.append(weather)
             }
             .store(in: &subscribers)
-        waitForExpectations(timeout: 2)
+        waitForExpectations(timeout: 10)
         XCTAssertNil(error)
         XCTAssertEqual(currentWeather?.name, viewModel?.sortedWeathers.first?.name)
         XCTAssertEqual(currentWeather?.coordinate.latitute, viewModel?.sortedWeathers.first?.coordinate.latitute)
