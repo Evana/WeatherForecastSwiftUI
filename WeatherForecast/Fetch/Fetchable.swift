@@ -47,6 +47,16 @@ extension Fetchable where FetchedType: Decodable {
         debugPrint("request = \(request), \(request.httpBody.map { String(data: $0, encoding: .utf8)?.prefix(200) ?? "" } ?? "")")
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output in
+                guard let response = output.response as? HTTPURLResponse
+                    else { throw Fetch.Error.statusCodeMissing }
+                guard response.statusCode == 200 else {
+                    if let error = try? JSONDecoder().decode(Fetch.Failure.Error.self, from: output.data) {
+                        throw Fetch.Error.failure(error)
+                    } else {
+                        throw Fetch.Error.parsing(description: "Unable to parse error")
+                    }
+                }
+            
                 return output.data
         }
         .eraseToAnyPublisher()

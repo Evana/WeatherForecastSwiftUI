@@ -12,9 +12,18 @@ enum Fetch {}
 extension Fetch {
     
     enum Error: Swift.Error {
+        case failure(Failure.Error)
         case parsing(description: String)
         case network(description: String)
+        case statusCodeMissing
         case url
+    }
+    
+    struct Failure {
+        struct Error: Swift.Error, Equatable, Decodable {
+            let title: String?
+            let message: String?
+        }
     }
 }
 
