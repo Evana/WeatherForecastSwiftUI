@@ -41,7 +41,6 @@ extension WeeklyWeatherViewModel {
             .map { $0.removeDuplicates() }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] viewModels in
-                debugPrint(viewModels)
                 self?.dailyWeatherViewModels = viewModels
             }
             .store(in: &subscribers)
