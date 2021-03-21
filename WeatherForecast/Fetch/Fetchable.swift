@@ -78,16 +78,16 @@ extension Fetchable where FetchedType: Decodable {
     static func request(keyValues: [String: FetchValue?]? = nil) throws -> URLRequest {
         
         let defaultKeyValues: [String: FetchValue] = ["mode": "json",
-                                                   "units": "metric",
-                                                   "appid": Environment().apiKey]
+                                                      "units": "metric",
+                                                      "appid": Environment().apiKey]
         let environment = Environment()
         let nonNilKeyValues = keyValues?.compactMapValues { $0 } ?? [:]
         let mergedKeyValues = defaultKeyValues
             .merging(nonNilKeyValues) { $1 }
         let queryItemsDictionary = mergedKeyValues
             .reduce(into: [:]) { result, tuple in
-                result[tuple.key.apiString] = tuple.value.apiString
-        }
+                result[tuple.key] = tuple.value.apiString
+            }
         let urlPathComponents = [urlEndPath].compactMap { $0 }
         guard let url = environment.baseURL?.appendingPathComponents(urlPathComponents) else {
             throw Fetch.Error.url
