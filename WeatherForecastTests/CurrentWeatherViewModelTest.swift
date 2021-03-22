@@ -27,10 +27,11 @@ class CurrentWeatherViewModelTest: XCTestCase {
         subscribers = []
         super.tearDown()
     }
-    func testLoadWeeklyData() {
+    
+    func testLoadCurrentWeatherData() {
         var error: Error?
         var currentWeather: CurrentWeather?
-        let expectation = self.expectation(description: "WeekluWeather")
+        let expectation = self.expectation(description: "CurrentWeather")
         Fetch.CurrentWeather.publisher(q: viewModel?.text ?? "")
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -49,6 +50,39 @@ class CurrentWeatherViewModelTest: XCTestCase {
         XCTAssertNil(error)
         XCTAssertEqual(currentWeather?.name, viewModel?.sortedWeathers.first?.name)
         XCTAssertEqual(currentWeather?.coordinate.latitute, viewModel?.sortedWeathers.first?.coordinate.latitute)
+    }
+    
+    func testCurrentWeatherFailed() {
+        viewModel?.text = "qqqq"
+        var apiError: Fetch.Failure.Error?
+        var currentWeather: CurrentWeather?
+        let expectation = self.expectation(description: "CurrentWeather")
+        Fetch.CurrentWeather.publisher(q: viewModel?.text ?? "")
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                switch completion{
+                case .finished: break
+                case.failure(let failureError):
+                    guard let fetchError = failureError as? Fetch.Error,
+                          case let .failure(error) = fetchError
+                    else {
+                        return
+                    }
+                    apiError = error
+                    self?.viewModel?.error = error
+                }
+                expectation.fulfill()
+            } receiveValue: { [weak self] weather in
+                currentWeather = weather
+                self?.viewModel?.weathers.append(weather)
+            }
+            .store(in: &subscribers)
+        waitForExpectations(timeout: 10)
+        
+        XCTAssertNil(currentWeather)
+        XCTAssertNotNil(viewModel?.error)
+        XCTAssertNotNil(apiError)
+        XCTAssertEqual(apiError?.message, "city not found")
     }
 
 }

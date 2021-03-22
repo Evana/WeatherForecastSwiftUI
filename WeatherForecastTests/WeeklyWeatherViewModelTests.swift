@@ -24,7 +24,7 @@ class WeeklyWeatherViewModelTests: XCTestCase {
     func testLoadWeeklyData() {
         var error: Error?
         var weeklyWeather: WeeklyWeather?
-        let expectation = self.expectation(description: "WeekluWeather")
+        let expectation = self.expectation(description: "WeeklyWeather")
         Fetch.WeeklyWeather.publisher(q: viewModel?.currentWeather.name ?? "")
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -43,6 +43,35 @@ class WeeklyWeatherViewModelTests: XCTestCase {
         XCTAssertEqual(weeklyWeather?.city.name, viewModel?.weeklyWeather?.city.name)
         XCTAssertEqual(weeklyWeather?.city.coordinate.latitute, viewModel?.weeklyWeather?.city.coordinate.latitute)
         XCTAssertEqual(weeklyWeather?.city.name, "Minto")
+    }
+    
+    func testWeeklyWeatherFailed() {
+        var apiError: Fetch.Failure.Error?
+        var weeklyWeather: WeeklyWeather?
+        let expectation = self.expectation(description: "WeeklyWeather")
+        Fetch.WeeklyWeather.publisher(q: "qqqq")
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion{
+                case .finished: break
+                case.failure(let failureError):
+                    guard let fetchError = failureError as? Fetch.Error,
+                          case let .failure(error) = fetchError
+                    else {
+                        return
+                    }
+                    apiError = error
+                }
+                expectation.fulfill()
+            } receiveValue: { weather in
+                weeklyWeather = weather
+            }
+            .store(in: &subscribers)
+        waitForExpectations(timeout: 10)
+        
+        XCTAssertNil(weeklyWeather)
+        XCTAssertNotNil(apiError)
+        XCTAssertEqual(apiError?.message, "city not found")
     }
 
 }
