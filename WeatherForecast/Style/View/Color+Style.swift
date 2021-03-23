@@ -18,4 +18,5 @@ extension Color {
     static let disclosureIndicator = Color(.systemFill)
     static let textBorderNormal = Color.gray.opacity(0.5)
     static let textBorderHighlighted = Color.blue.opacity(0.5)
+    static let error = Color.red
 }

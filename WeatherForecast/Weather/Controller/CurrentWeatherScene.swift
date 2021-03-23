@@ -17,6 +17,7 @@ extension CurrentWeatherScene: View {
             VStack(alignment: .leading, spacing: 10) {
                 searchByPicker
                 searchField
+                errorView
                 if viewModel.sortedWeathers.isEmpty {
                     emptySection
                 } else {
@@ -69,11 +70,26 @@ extension CurrentWeatherScene: View {
         .padding(.horizontal)
         .overlay(RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        (viewModel.text.isEmpty ? Color.textBorderNormal : Color.textBorderHighlighted),
+                        (viewModel.text.isEmpty
+                            ? Color.textBorderNormal
+                            : viewModel.error != nil
+                            ? Color.error
+                            : Color.textBorderHighlighted),
                         lineWidth: 1
                     )
         )
         .padding(.horizontal)
+    }
+    
+    private var errorView: some View {
+        Group {
+            viewModel.errorText.map {
+                Text($0)
+                    .foregroundColor(.error)
+                    .bold()
+                    .padding(.horizontal)
+            }
+        }
     }
     
     private var emptySection: some View {

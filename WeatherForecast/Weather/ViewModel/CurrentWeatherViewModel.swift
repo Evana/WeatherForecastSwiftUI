@@ -11,7 +11,7 @@ import Combine
 class CurrentWeatherViewModel: ObservableObject {
     @Published var text: String = ""
     @Published var weathers: [CurrentWeather] = []
-    @Published var error: Error?
+    @Published var error: Fetch.Error?
     @Published var segment: Segment = .postCode
     private var subscribers = Set<AnyCancellable>()
     
@@ -20,7 +20,14 @@ class CurrentWeatherViewModel: ObservableObject {
                 .sorted { $0.date > $1.date }
                 .prefix(5))
     }
+    
+    var errorText: String? {
+        guard case .failure(let fetchError) = error else { return nil }
+        return fetchError.message
+    }
 }
+
+// MARK: Functions
 
 extension CurrentWeatherViewModel {
     func onAppear() {
@@ -69,8 +76,12 @@ extension CurrentWeatherViewModel {
         publisher?
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] result in
-                guard case let .failure(error) = result else { return }
-                self?.error = error
+                guard case let .failure(error) = result,
+                      let fetchError = error as? Fetch.Error
+                else {
+                    return
+                }
+                self?.error = fetchError
             }) { [weak self] currentWeather in
                 self?.weathers.append(currentWeather)
                 self?.saveWeather(currentWeather)
@@ -79,6 +90,8 @@ extension CurrentWeatherViewModel {
             .store(in: &subscribers)
     }
 }
+
+// MARK: Private functions
 
 extension CurrentWeatherViewModel {
     private func saveWeather(_ weather: CurrentWeather) {
