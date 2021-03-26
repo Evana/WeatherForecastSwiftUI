@@ -69,7 +69,7 @@ class CurrentWeatherViewModelTest: XCTestCase {
                         return
                     }
                     apiError = error
-                    self?.viewModel?.error = error
+                    self?.viewModel?.error = fetchError
                 }
                 expectation.fulfill()
             } receiveValue: { [weak self] weather in

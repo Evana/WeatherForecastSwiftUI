@@ -19,7 +19,7 @@ struct DailyWeatherCell: View {
                     .foregroundColor(.secondary)
             }
             .distributed(.leading)
-            .frame(width: 80)
+            .frame(width: 100)
             
             Divider()
             HStack(spacing: 4) {

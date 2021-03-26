@@ -32,7 +32,7 @@ struct RoundedCorners_Previews: PreviewProvider {
         Text("Hello, World!")
             .padding()
             .background(Color.yellow)
-            .clipShape(RoundedCorners([.bottomLeft, .bottomRight], radius: 20))
+            .clipShape(RoundedCorners([.allCorners], radius: 20))
             .padding()
             .previewLayout(.sizeThatFits)
     }
